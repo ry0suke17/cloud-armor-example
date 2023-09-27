@@ -1,0 +1,7 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: backendconfig
+spec:
+  securityPolicy:
+    name: "test-app2-policy"

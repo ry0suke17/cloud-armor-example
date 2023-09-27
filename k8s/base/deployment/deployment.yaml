@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+        - name: server
+          image: us-docker.pkg.dev/google-samples/containers/gke/hello-app:1.0
+          ports:
+            - name: server
+              containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
