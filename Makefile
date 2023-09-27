@@ -17,8 +17,8 @@ gke/context/use:
 	gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --region ${GKE_REGION}
 	kubectl config use-context gke_${GCP_PROJECT_ID}_${GKE_REGION}_${GKE_CLUSTER_NAME}
 
-# ref. https://github.com/yannh/kubernetes-json-schema/
 k8s/validate:
+	# ref. https://github.com/yannh/kubernetes-json-schema/
 	kustomize build ./k8s/test/hello-app1 | kubeconform -kubernetes-version ${K8S_VERSION} -strict -skip BackendConfig
 	kustomize build ./k8s/test/hello-app2 | kubeconform -kubernetes-version ${K8S_VERSION} -strict -skip BackendConfig
 

@@ -1,5 +1,6 @@
 # terraform version v1.5.7
 
+# need to run `export TF_VAR_gcp_project=your-gcp-project` in advance
 variable "gcp_project" {
   type = string
 }
