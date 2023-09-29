@@ -7,7 +7,7 @@ variable "gcp_project" {
 
 variable "gcp_region" {
   type    = string
-  default = "us-west1"
+  default = "us-east1"
 }
 
 provider "google" {
@@ -21,21 +21,30 @@ provider "google-beta" {
 }
 
 resource "google_container_cluster" "test-cluster" {
-  project            = var.gcp_project
-  name               = "test-cluster"
+  project                  = var.gcp_project
+  name                     = "test-cluster"
+  location                 = var.gcp_region
+  min_master_version       = "1.27.3-gke.100"
+  remove_default_node_pool = true
+  initial_node_count       = 1
+}
+
+resource "google_container_node_pool" "test-cluster-node-pool" {
+  cluster            = google_container_cluster.test-cluster.name
   location           = var.gcp_region
+  name               = "default-pool"
   initial_node_count = 2
-  min_master_version = "1.27.3-gke.100"
   node_config {
-    # See below for GCE pricing.
-    # ref. https://cloud.google.com/compute/all-pricing
     machine_type = "e2-micro"
     disk_size_gb = 10
+  }
+  timeouts {
+    create = "15m"
   }
 }
 
 resource "google_compute_security_policy" "test-app1-policy" {
-  name = "test-policy-app1"
+  name = "test-app1-policy"
   rule {
     action   = "rate_based_ban"
     priority = 100
@@ -69,7 +78,7 @@ resource "google_compute_security_policy" "test-app1-policy" {
 }
 
 resource "google_compute_security_policy" "test-app2-policy" {
-  name = "test-policy-app2"
+  name = "test-app2-policy"
   rule {
     action   = "rate_based_ban"
     priority = 100
