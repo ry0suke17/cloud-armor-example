@@ -4,5 +4,5 @@ metadata:
   name: service
   annotations:
     # must be created security policy in advance.
-    cloud.google.com/backend-config: '{"ports": {"server":"test-app2-backendconfig"}}'
+    cloud.google.com/backend-config: '{"ports": {"server":"hello-app2-backendconfig"}}'
 
