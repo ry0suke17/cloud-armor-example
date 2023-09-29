@@ -6,7 +6,7 @@ variable "gcp_project" {
 }
 
 variable "gcp_region" {
-  type = string
+  type    = string
   default = "us-west1"
 }
 
@@ -21,7 +21,7 @@ provider "google-beta" {
 }
 
 resource "google_container_cluster" "test-cluster" {
-  project = var.gcp_project
+  project            = var.gcp_project
   name               = "test-cluster"
   location           = var.gcp_region
   initial_node_count = 2
@@ -45,10 +45,10 @@ resource "google_compute_security_policy" "test-app1-policy" {
       }
     }
     rate_limit_options {
-      conform_action = "allow"
-      exceed_action  = "deny(429)"
+      conform_action   = "allow"
+      exceed_action    = "deny(429)"
       ban_duration_sec = 60
-      enforce_on_key = "IP"
+      enforce_on_key   = "IP"
       rate_limit_threshold {
         count        = 10
         interval_sec = 60
@@ -79,10 +79,10 @@ resource "google_compute_security_policy" "test-app2-policy" {
       }
     }
     rate_limit_options {
-      conform_action = "allow"
-      exceed_action  = "deny(429)"
+      conform_action   = "allow"
+      exceed_action    = "deny(429)"
       ban_duration_sec = 60
-      enforce_on_key = "IP"
+      enforce_on_key   = "IP"
       rate_limit_threshold {
         count        = 10
         interval_sec = 60
