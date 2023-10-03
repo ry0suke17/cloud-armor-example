@@ -48,6 +48,7 @@ resource "google_compute_security_policy" "test-app1-policy" {
   rule {
     action   = "rate_based_ban"
     priority = 100
+    preview = false
     match {
       expr {
         expression = "request.path.matches('/app1')"
@@ -82,6 +83,7 @@ resource "google_compute_security_policy" "test-app2-policy" {
   rule {
     action   = "rate_based_ban"
     priority = 100
+    preview = false
     match {
       expr {
         expression = "request.path.matches('/app2')"
