@@ -33,7 +33,8 @@ resource "google_container_node_pool" "test-cluster-node-pool" {
   cluster            = google_container_cluster.test-cluster.name
   location           = var.gcp_region
   name               = "default-pool"
-  initial_node_count = 2
+  // you should count up when installing datadog agents, etc.
+  initial_node_count = 1
   node_config {
     machine_type = "e2-micro"
     disk_size_gb = 10
