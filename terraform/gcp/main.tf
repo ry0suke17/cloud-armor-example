@@ -61,7 +61,7 @@ resource "google_compute_security_policy" "test-app1-policy" {
       ban_duration_sec = 60
       enforce_on_key   = "IP"
       rate_limit_threshold {
-        count        = 10
+        count        = 5
         interval_sec = 60
       }
     }
