@@ -30,9 +30,9 @@ resource "google_container_cluster" "test-cluster" {
 }
 
 resource "google_container_node_pool" "test-cluster-node-pool" {
-  cluster            = google_container_cluster.test-cluster.name
-  location           = var.gcp_region
-  name               = "default-pool"
+  cluster  = google_container_cluster.test-cluster.name
+  location = var.gcp_region
+  name     = "default-pool"
   // you should count up when installing datadog agents, etc.
   initial_node_count = 1
   node_config {
@@ -44,72 +44,80 @@ resource "google_container_node_pool" "test-cluster-node-pool" {
   }
 }
 
-resource "google_compute_security_policy" "test-app1-policy" {
-  name = "test-app1-policy"
-  rule {
-    action   = "rate_based_ban"
-    priority = 100
-    preview = false
-    match {
-      expr {
-        expression = "request.path.matches('/app1')"
+module "test-app1-policy" {
+  source      = "./modules/armor"
+  name        = "test-app1-policy"
+  description = "security policy for app1"
+  rules = [
+    {
+      action      = "rate_based_ban"
+      priority    = 100
+      description = "rule for app1 endpoint"
+      match = {
+        expr = {
+          expression = "request.path.matches('/app1')"
+        }
       }
-    }
-    rate_limit_options {
-      conform_action   = "allow"
-      exceed_action    = "deny(429)"
-      ban_duration_sec = 60
-      enforce_on_key   = "IP"
-      rate_limit_threshold {
-        count        = 5
-        interval_sec = 60
+      rate_limit_options = {
+        exceed_action    = "deny(429)"
+        ban_duration_sec = 60
+        enforce_on_key   = "IP"
+        rate_limit_threshold = {
+          count        = 10
+          interval_sec = 60
+        }
       }
-    }
-  }
-  rule {
-    action   = "allow"
-    priority = 2147483647
-    match {
-      versioned_expr = "SRC_IPS_V1"
-      config {
-        src_ip_ranges = ["*"]
+      description = "rule for app1 endpoint"
+    },
+    {
+      action   = "allow"
+      priority = 2147483647
+      match = {
+        versioned_expr = "SRC_IPS_V1"
+        config = {
+          src_ip_ranges = ["*"]
+        }
       }
+      description = "default rule"
     }
-    description = "default rule"
-  }
+  ]
 }
 
-resource "google_compute_security_policy" "test-app2-policy" {
-  name = "test-app2-policy"
-  rule {
-    action   = "rate_based_ban"
-    priority = 100
-    preview = false
-    match {
-      expr {
-        expression = "request.path.matches('/app2')"
+module "test-app2-policy" {
+  source      = "./modules/armor"
+  name        = "test-app2-policy"
+  description = "security policy for app2"
+  rules = [
+    {
+      action      = "rate_based_ban"
+      priority    = 100
+      description = "rule for app2 endpoint"
+      match = {
+        expr = {
+          expression = "request.path.matches('/app2')"
+        }
       }
-    }
-    rate_limit_options {
-      conform_action   = "allow"
-      exceed_action    = "deny(429)"
-      ban_duration_sec = 60
-      enforce_on_key   = "IP"
-      rate_limit_threshold {
-        count        = 10
-        interval_sec = 60
+      rate_limit_options = {
+        exceed_action    = "deny(429)"
+        ban_duration_sec = 60
+        enforce_on_key   = "IP"
+        rate_limit_threshold = {
+          count        = 10
+          interval_sec = 60
+        }
       }
-    }
-  }
-  rule {
-    action   = "allow"
-    priority = 2147483647
-    match {
-      versioned_expr = "SRC_IPS_V1"
-      config {
-        src_ip_ranges = ["*"]
+      description = "rule for app2 endpoint"
+    },
+    {
+      action   = "allow"
+      priority = 2147483647
+      match = {
+        versioned_expr = "SRC_IPS_V1"
+        config = {
+          src_ip_ranges = ["*"]
+        }
       }
+      description = "default rule"
     }
-    description = "default rule"
-  }
+  ]
 }
